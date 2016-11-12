@@ -1,6 +1,6 @@
-package BallonDB.test;
+package balloondb.test;
 
-import BalloonDB.DataObject;
+import balloondb.DataObject;
 
 public class Person extends DataObject {
 	
@@ -11,6 +11,7 @@ public class Person extends DataObject {
 		super();
 		this.name = name;
 		this.age = age;
+		this.key = name;
 	}
 	
 	public String getName() {

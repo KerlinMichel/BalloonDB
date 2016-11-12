@@ -1,4 +1,4 @@
-package BallonDB.test;
+package balloondb.test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,9 +10,10 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
-import BallonDB.test.simplequeries.SimpleQuerySuite;
-import BalloonDB.BalloonDB;
-import BalloonDB.DataObject;
+import balloondb.BalloonDB;
+import balloondb.DataObject;
+import balloondb.test.simplequeries.SimpleQuerySuite;
+
 
 public class Tester {
 	
@@ -26,7 +27,7 @@ public class Tester {
 			System.out.println(failure.toString());
 		}
 		
-		System.out.println(result.wasSuccessful());
+		System.out.println("The test were " + (result.wasSuccessful() ? "succesful." : " a failure."));
 	}
 
 }

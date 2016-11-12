@@ -1,4 +1,4 @@
-package BalloonDB;
+package balloondb;
 
 import java.io.File;
 import java.io.Serializable;
@@ -12,7 +12,7 @@ import java.util.UUID;
 public class DataObject implements Serializable {
 	private static final long serialVersionUID = 1L;
 	//@Primary_Key
-	private Object key;
+	protected Object key;
 	private File file;
 	
 	private transient HashMap<String, Method> methodMap;

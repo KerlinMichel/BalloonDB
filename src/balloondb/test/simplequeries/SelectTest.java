@@ -1,7 +1,7 @@
-package BallonDB.test.simplequeries;
+package balloondb.test.simplequeries;
 
-import BallonDB.test.Person;
-import BallonDB.test.Tester;
+import balloondb.test.Person;
+import balloondb.test.Tester;
 import junit.framework.TestCase;
 
 public class SelectTest extends TestCase {

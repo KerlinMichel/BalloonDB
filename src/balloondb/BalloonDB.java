@@ -1,6 +1,8 @@
-package BalloonDB;
+package balloondb;
 
 import java.io.File;
+
+import balloondb.query.Query;
 
 public class BalloonDB {
 	
@@ -16,7 +18,7 @@ public class BalloonDB {
 		try {
 			storage.insert(obj);
 		} catch (EntityIntegerityException e) {
-			e.printStackTrace();
+			//e.printStackTrace(); 
 		}
 	}
 	

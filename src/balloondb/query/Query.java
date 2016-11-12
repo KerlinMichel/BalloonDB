@@ -1,4 +1,4 @@
-package BalloonDB;
+package balloondb.query;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+
+import balloondb.BalloonDB;
+import balloondb.DataObject;
 
 public class Query {
 	
@@ -29,17 +32,17 @@ public class Query {
 		}
 		List<DataObject> result = new ArrayList<DataObject>();
 		HashMap<Object, DataObject> objects = null;
-		for(Class<? extends DataObject> type : bdb.getSchema().getClasses()) {
-			 if(type.getName().toLowerCase().contains(this.type.toLowerCase())) {
-				 for(Entry<Object, DataObject> entry : bdb.getStorage().getData().get(type).entrySet()) {
+		for(Entry<String, Class<? extends DataObject>> type : bdb.getSchema().getTypes().entrySet()) {
+			 if(type.getValue().getName().toLowerCase().contains(this.type.toLowerCase())) {
+				 for(Entry<Object, DataObject> entry : bdb.getStorage().getData().get(type.getValue()).entrySet()) {
 					 if (conditions != null && conditions.length > 0) {
-						 if(checkAllConditions(type, entry.getValue()))
+						 if(checkAllConditions(type.getValue(), entry.getValue()))
 							 result.add(entry.getValue());
 					 } else {
 						 result.add(entry.getValue());
 					 }
 				 }
-				 objects = bdb.getStorage().getData().get(type);
+				 objects = bdb.getStorage().getData().get(type.getValue());
 				 break;
 			 }
 		}		
