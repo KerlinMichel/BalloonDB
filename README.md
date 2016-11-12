@@ -1,4 +1,4 @@
-# BallonDB :balloon:
+# BalloonDB :balloon:
 
 BalloonDB is an object relational database. It is build on Java and it follows the ideas of object orient programming.
 
