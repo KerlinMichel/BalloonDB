@@ -1,6 +1,6 @@
 # BallonDB :balloon:
 
-BallonDB is an object relational database. It is build on Java and it follows the ideas of object orient programming.
+BalloonDB is an object relational database. It is build on Java and it follows the ideas of object orient programming.
 
 How to add a client-side Database for devs
 
