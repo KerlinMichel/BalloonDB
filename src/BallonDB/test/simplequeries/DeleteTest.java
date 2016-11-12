@@ -1,9 +1,9 @@
 package BallonDB.test.simplequeries;
 
 import junit.framework.TestCase;
-import BallonDB.DataObject;
 import BallonDB.test.Person;
 import BallonDB.test.Tester;
+import BalloonDB.DataObject;
 
 public class DeleteTest extends TestCase{
 	

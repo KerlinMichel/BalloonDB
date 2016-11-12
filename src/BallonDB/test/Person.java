@@ -1,6 +1,6 @@
 package BallonDB.test;
 
-import BallonDB.DataObject;
+import BalloonDB.DataObject;
 
 public class Person extends DataObject {
 	

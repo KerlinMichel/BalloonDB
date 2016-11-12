@@ -1,13 +1,13 @@
-package BallonDB;
+package BalloonDB;
 
 import java.io.File;
 
-public class BallonDB {
+public class BalloonDB {
 	
 	private Schema schema;
 	private Storage storage;
 	
-	public BallonDB(File file) {
+	public BalloonDB(File file) {
 		schema = new Schema();
 		storage = new Storage(file, schema);
 	}

@@ -1,4 +1,4 @@
-package BallonDB;
+package BalloonDB;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class Query {
 		this.query = query;
 	}
 	
-	public Object query(BallonDB bdb) {
+	public Object query(BalloonDB bdb) {
 		try {
 			parse();
 		} catch (Exception e) {
@@ -54,17 +54,17 @@ public class Query {
 			return result;
 	}
 	
-	public Object select(BallonDB bdb) {
+	public Object select(BalloonDB bdb) {
 		query = "select " + query;
 		return query(bdb);
 	}
 	
-	public Object delete(BallonDB bdb) {
+	public Object delete(BalloonDB bdb) {
 		query = "delete " + query;
 		return query(bdb);
 	}
 	
-	private void operate(BallonDB bdb, HashMap<Object, DataObject> data, DataObject obj) {
+	private void operate(BalloonDB bdb, HashMap<Object, DataObject> data, DataObject obj) {
 		switch(cmd){
 			case DELETE : data.remove(obj.getKey()); obj.delete();
 				break;

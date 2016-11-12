@@ -10,14 +10,14 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
-import BallonDB.BallonDB;
-import BallonDB.DataObject;
 import BallonDB.test.simplequeries.SimpleQuerySuite;
+import BalloonDB.BalloonDB;
+import BalloonDB.DataObject;
 
 public class Tester {
 	
 	private static final File testingDir = new File("/home/kerlinmichel/Desktop/test");
-	public static BallonDB db = new BallonDB(testingDir);
+	public static BalloonDB db = new BalloonDB(testingDir);
 	
 	public static void main(String[] args) {
 		Result result = JUnitCore.runClasses(SimpleQuerySuite.class);
