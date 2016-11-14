@@ -2,11 +2,10 @@ package balloondb;
 
 import java.io.File;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class DataObject implements Serializable {
@@ -46,6 +45,24 @@ public class DataObject implements Serializable {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public Object getField(String name, Class<? extends DataObject> type) {
+		Object field = null;
+		try {
+			Field f = type.getDeclaredField(name);
+			f.setAccessible(true);
+			field = f.get(this);
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return field;
 	}
 	
 	public Object getKey() {

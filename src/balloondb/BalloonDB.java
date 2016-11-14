@@ -22,6 +22,11 @@ public class BalloonDB {
 		}
 	}
 	
+	public Object create(String query) {
+		Query q = new Query(query);
+		return q.create(this);
+	}
+	
 	public Object select(String query) {
 		Query q = new Query(query);
 		return q.select(this);
@@ -44,16 +49,6 @@ public class BalloonDB {
 				if(f.getPath().contains(".ser"))
 					storage.loadObject(f);
 			}
-		}
-	}
-	
-	private void readObjectFile(File file) {
-		DataObject obj = null;
-		if(!file.getPath().contains(".ser"))
-			return;
-		obj = storage.loadObject(file);
-		if(obj != null) {
-			insert(obj);
 		}
 	}
 	

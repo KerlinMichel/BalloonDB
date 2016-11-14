@@ -1,9 +1,6 @@
 package balloondb;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 
 public class Schema {
 
@@ -31,6 +28,11 @@ public class Schema {
 	
 	public boolean entityIntegerity() {
 		return absoluteEntityIntegerity;
+	}
+	
+	public static Class<? extends DataObject> generateClass() throws ClassNotFoundException {
+		//TODO: CREATE DYANAMIC CLASS CREATION
+		return null;
 	}
 	
 

@@ -1,12 +1,10 @@
 package balloondb.test.simplequeries;
 
-import balloondb.DataObject;
 import balloondb.test.Person;
 import balloondb.test.Tester;
 import junit.framework.TestCase;
 
-public class DeleteTest extends TestCase {
-	
+public class CreateTest extends TestCase {
 	protected Person p1;
 	protected Person p2;
 	
@@ -19,15 +17,14 @@ public class DeleteTest extends TestCase {
 	}
 	
 	public void testDelete() {
-		System.out.println("Delete tests: ");
+		System.out.println("Create tests: ");
 		System.out.println("Inserted Person(\"Crimson King\", 1000) and Person(\"Norman\", 35) and force saving Database creating files \n");
 		
-		System.out.println("Testing delete with condition age = 35");
-		Object result = Tester.db.delete("person where age = 35");
+		System.out.println("Create type knight");
+		Object result = Tester.db.create("type Horse (String name, boolean mountable) : pk name");
 		System.out.println(result);
-		assertEquals(false, ((DataObject)result).getFile().exists());
+		//assertEquals(false, ((DataObject)result).getFile().exists());
 		
 		System.out.println("----------");
 	}
-
 }

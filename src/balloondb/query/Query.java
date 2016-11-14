@@ -1,8 +1,6 @@
 package balloondb.query;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -13,13 +11,16 @@ import balloondb.DataObject;
 public class Query {
 	
 	private String query;
-	private enum Command {
+	public enum Command {
 		SELECT,
-		DELETE
+		DELETE,
+		CREATE
 	}
 	private Command cmd;
 	private String[] conditions;
-	private String type;
+	private String workOnType;
+	private Object[] createClassFields;
+	
 	public Query(String query) {
 		this.query = query;
 	}
@@ -30,11 +31,20 @@ public class Query {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		switch(cmd){
+			case DELETE:
+			case SELECT: return operateOnDB(bdb);
+			case CREATE: return null;//TODO: CREATE CLASS CREATOR IN SCHEMA CLASS
+			default: return null;
+		}
+	}
+	
+	private Object operateOnDB(BalloonDB bdb) {
 		List<DataObject> result = new ArrayList<DataObject>();
 		HashMap<Object, DataObject> objects = null;
-		for(Entry<String, Class<? extends DataObject>> type : bdb.getSchema().getTypes().entrySet()) {
-			 if(type.getValue().getName().toLowerCase().contains(this.type.toLowerCase())) {
-				 for(Entry<Object, DataObject> entry : bdb.getStorage().getData().get(type.getValue()).entrySet()) {
+		for(Entry<String, Class<? extends DataObject>> type : bdb.getSchema().getTypes().entrySet()) { // loop all types in database
+			 if(type.getValue().getName().toLowerCase().contains(this.workOnType.toLowerCase())) { // search matching type
+				 for(Entry<Object, DataObject> entry : bdb.getStorage().getData().get(type.getValue()).entrySet()) { //loop through all objects
 					 if (conditions != null && conditions.length > 0) {
 						 if(checkAllConditions(type.getValue(), entry.getValue()))
 							 result.add(entry.getValue());
@@ -67,6 +77,11 @@ public class Query {
 		return query(bdb);
 	}
 	
+	public Object create(BalloonDB bdb) {
+		query = "create " + query;
+		return query(bdb);
+	}
+	
 	private void operate(BalloonDB bdb, HashMap<Object, DataObject> data, DataObject obj) {
 		switch(cmd){
 			case DELETE : data.remove(obj.getKey()); obj.delete();
@@ -87,7 +102,7 @@ public class Query {
 		String fieldName = params[0];
 		String condition = params[1];
 		String checkValue = params[2];
-		Object field = getField(fieldName, type, obj);
+		Object field = obj.getField(fieldName, type);//getField(fieldName, type, obj);
 		switch(condition) {
 			case "=" :
 				if(field.toString().equals(checkValue))
@@ -97,42 +112,44 @@ public class Query {
 		return false;
 	}
 	
-	private void parse() throws Exception {
-		String[] params = query.split("\\s+");
-		switch(params[0].toLowerCase()) {
-			case "select" : cmd = Command.SELECT; break;
-			case "delete" : cmd = Command.DELETE; break;
-		}
-		type = params[1];
-		if(params.length == 2)
-			return;
-		if(!params[2].equals("where"))
-			throw new Exception();
-		conditions = new String[(params.length-3)/3];
-		for(int i = 0; i < conditions.length; i++) {
-			String s = "";
-			for(int j = 0; j < 3; j++)
-				s += params[3+j] + " ";
-			conditions[i] = s;
+	private void parse() { 
+		try {
+			QueryParser.parse(this);
+		} catch (QuerySyntaxError e) {
+			e.printStackTrace();
 		}
 	}
 	
-	private static Object getField(String name, Class type, Object obj) {
-		Object field = null;
-		try {
-			Field f = type.getDeclaredField(name);
-			f.setAccessible(true);
-			field = f.get(obj);
-		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		return field;
+	public String getQueryString() {
+		return query;
+	}
+	
+	public void setCommand(Command cmd) {
+		this.cmd = cmd;
+	}
+	
+	public String getWorkOnType() {
+		return workOnType;
+	}
+	
+	public void setWorkOnType(String type) {
+		workOnType = type;
+	}
+	
+	public String[] getConditions() {
+		return conditions;
+	}
+	
+	public void setConditions(String[] cond) {
+		conditions = cond;
+	}
+
+	public Object[] getCreateClassFields() {
+		return createClassFields;
+	}
+
+	public void setCreateClassFields(Object[] classFields) {
+		createClassFields = classFields;
 	}
 
 }

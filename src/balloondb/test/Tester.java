@@ -1,17 +1,12 @@
 package balloondb.test;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
 import balloondb.BalloonDB;
-import balloondb.DataObject;
 import balloondb.test.simplequeries.SimpleQuerySuite;
 
 
