@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -84,6 +86,7 @@ public class Storage {
 	}
 	
 	public void saveAllData() {
+		saveSchema();
 		for(Entry<Class<? extends DataObject>, HashMap<Object, DataObject>> entry : data.entrySet()) {
 			for(Entry<Object, DataObject> objs : entry.getValue().entrySet()) {
 				try {
@@ -95,6 +98,34 @@ public class Storage {
 			         i.printStackTrace();
 			      }
 			}
+		}
+	}
+	
+	private void saveSchema() {
+		String args = "types=[";
+		for(Entry<String, Class<? extends DataObject>> type : schema.getTypes().entrySet()) {
+			args += type.getValue().getCanonicalName() + ",";	
+		}
+		args += "]\n";
+		File sch = new File(rootDir.getAbsoluteFile() + "/.schema");
+		try {
+			Files.write(sch.toPath(), args.getBytes(StandardCharsets.UTF_8));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateSchema() {
+		String args = "types=[";
+		for(Entry<String, Class<? extends DataObject>> type : schema.getTypes().entrySet()) {
+			args += type.getValue().getCanonicalName() + ",";	
+		}
+		args += "]\n";
+		File sch = new File(rootDir.getAbsoluteFile() + "/.schema");
+		try {
+			Files.write(sch.toPath(), args.getBytes(StandardCharsets.UTF_8));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

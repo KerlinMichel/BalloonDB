@@ -10,7 +10,7 @@ public class BalloonDB {
 	private Storage storage;
 	
 	public BalloonDB(File file) {
-		schema = new Schema();
+		schema = new Schema(file);
 		storage = new Storage(file, schema);
 	}
 	

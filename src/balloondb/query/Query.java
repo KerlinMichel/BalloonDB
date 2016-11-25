@@ -38,7 +38,7 @@ public class Query {
 			case DELETE:
 			case SELECT: return operateOnDB(bdb);
 			case CREATE: try {
-				return Schema.generateClass(query);
+				return Schema.generateClass(query, bdb);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}

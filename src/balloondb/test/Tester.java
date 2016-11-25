@@ -12,7 +12,7 @@ import balloondb.test.simplequeries.SimpleQuerySuite;
 
 public class Tester {
 	
-	private static final File testingDir = new File("/home/kerlinmichel/Desktop/test");
+	private static final File testingDir = new File("/home/kerlinmichel/Desktop/test/balloondbtestspace");
 	public static BalloonDB db = new BalloonDB(testingDir);
 	
 	public static void main(String[] args) {

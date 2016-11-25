@@ -1,5 +1,6 @@
 package balloondb.test.simplequeries;
 
+import balloondb.DataObject;
 import balloondb.test.Person;
 import balloondb.test.Tester;
 import junit.framework.TestCase;
@@ -16,15 +17,18 @@ public class CreateTest extends TestCase {
 		Tester.db.forceSave();
 	}
 	
-	public void testDelete() {
+	public void testCreate() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		System.out.println("Create tests: ");
 		System.out.println("Inserted Person(\"Crimson King\", 1000) and Person(\"Norman\", 35) and force saving Database creating files \n");
 		
-		System.out.println("Create type knight");
+		System.out.println("Create type Horse");
 		Object result = Tester.db.create("type Horse { String name; boolean mountable; }");
 		System.out.println(result);
 		assertNotNull(result);
+		Class<? extends DataObject> horseType = Tester.db.getSchema().getTypes().get("Horse");
+		assertNotNull(horseType);
 		
 		System.out.println("----------");
 	}
+	
 }
