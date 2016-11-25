@@ -21,9 +21,9 @@ public class CreateTest extends TestCase {
 		System.out.println("Inserted Person(\"Crimson King\", 1000) and Person(\"Norman\", 35) and force saving Database creating files \n");
 		
 		System.out.println("Create type knight");
-		Object result = Tester.db.create("type Horse (String name, boolean mountable) : pk name");
+		Object result = Tester.db.create("type Horse { String name; boolean mountable; }");
 		System.out.println(result);
-		//assertEquals(false, ((DataObject)result).getFile().exists());
+		assertNotNull(result);
 		
 		System.out.println("----------");
 	}

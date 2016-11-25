@@ -14,7 +14,7 @@ public class QueryParser {
 		switch(params[0].toLowerCase()) {
 			case "select" : query.setCommand(Command.SELECT); operateQuery(query, params); break;
 			case "delete" : query.setCommand(Command.DELETE); operateQuery(query, params); break;
-			case "create" : query.setCommand(Command.SELECT); createQuery(query, params, query.getQueryString()); break;
+			case "create" : query.setCommand(Command.CREATE); break;
 			default : throw new QuerySyntaxError();
 		}
 	}
@@ -33,16 +33,15 @@ public class QueryParser {
 		}
 	}
 	
-	private static void createQuery(Query query, String[] params, String queryStr) throws QuerySyntaxError {// create type Person (String name, int age) : pk name;
-		System.out.println(Arrays.toString(params));
-		//String typeName = params[2];
+	//Old code of old syntax for create statements
+	private static void createQuery(Query query, String[] params, String queryStr) throws QuerySyntaxError {
 		if(params.length <= 2)
 			throw new QuerySyntaxError();
 		System.out.println(Arrays.toString(queryStr.split(" ", 4)));
 		String[] p = queryStr.split(" ", 4);
 		String typeName = p[2];
 		String[] specs = p[3].split(":");
-		query.setCreateClassFields(splitTuple(specs[0]));
+		query.setCreateClassFields(splitTuple(specs[0])); 
 	}
 	
 	private static String[] splitTuple(String tuple) throws QuerySyntaxError {

@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import balloondb.BalloonDB;
 import balloondb.DataObject;
+import balloondb.Schema;
 
 public class Query {
 	
@@ -21,6 +22,8 @@ public class Query {
 	private String workOnType;
 	private Object[] createClassFields;
 	
+	private String createSrc;
+	
 	public Query(String query) {
 		this.query = query;
 	}
@@ -34,7 +37,11 @@ public class Query {
 		switch(cmd){
 			case DELETE:
 			case SELECT: return operateOnDB(bdb);
-			case CREATE: return null;//TODO: CREATE CLASS CREATOR IN SCHEMA CLASS
+			case CREATE: try {
+				return Schema.generateClass(query);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
 			default: return null;
 		}
 	}
@@ -150,6 +157,14 @@ public class Query {
 
 	public void setCreateClassFields(Object[] classFields) {
 		createClassFields = classFields;
+	}
+
+	public String getCreateSrc() {
+		return createSrc;
+	}
+
+	public void setCreateSrc(String createSrc) {
+		this.createSrc = createSrc;
 	}
 
 }

@@ -6,7 +6,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 
 @Suite.SuiteClasses({ 
-   SelectTest.class, DeleteTest.class
+   SelectTest.class, DeleteTest.class, CreateTest.class
 })
 
 public class SimpleQuerySuite {

@@ -22,7 +22,7 @@ public class Tester {
 			System.out.println(failure.toString());
 		}
 		
-		System.out.println("The test were " + (result.wasSuccessful() ? "succesful." : " a failure."));
+		System.out.println("The tests were " + (result.wasSuccessful() ? "succesful." : "a failure."));
 	}
 
 }

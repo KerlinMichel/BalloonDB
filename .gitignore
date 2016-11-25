@@ -4,6 +4,7 @@
 *.project
 *.settings
 /bin/*
+*.metadata
 
 
 # OS X
