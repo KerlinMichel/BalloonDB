@@ -7,10 +7,10 @@ How to add a client-side Database for devs
 
 ```java
 package bdb.demo;
-import BallonDB.DataObject;
-/* BallonDB only accepts DataObjects to ensure
+import balloondb.DataObject;
+/* BalloonDB only accepts DataObjects to ensure
    that the class is serializable and have other
-   necessary things such as a key.
+   necessary features such as a key.
 */
 public class CustomObject extends DataObject {
 	String name;
@@ -26,7 +26,7 @@ public class CustomObject extends DataObject {
 CustomObject obj1 = new CustomObject("Some-name", 15.2D);
 CustomObject obj2 = new CustomObject("Diff-name", 45D);
 
-BallonDB bdb = new BallonDB(new File("/Test")); 
+BalloonDB bdb = new BalloonDB(new File("/Test")); 
 bdb.insert(obj1);
 bdb.insert(obj2);
 bdb.forceSave();

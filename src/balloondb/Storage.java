@@ -104,7 +104,7 @@ public class Storage {
 	private void saveSchema() {
 		String args = "types=[";
 		for(Entry<String, Class<? extends DataObject>> type : schema.getTypes().entrySet()) {
-			args += type.getValue().getCanonicalName() + ",";	
+			args += type.getValue().getCanonicalName() + ",";
 		}
 		args += "]\n";
 		File sch = new File(rootDir.getAbsoluteFile() + "/.schema");
