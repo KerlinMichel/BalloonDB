@@ -103,8 +103,11 @@ public class Storage {
 	
 	private void saveSchema() {
 		String args = "types=[";
-		for(Entry<String, Class<? extends DataObject>> type : schema.getTypes().entrySet()) {
+		/*for(Entry<String, Class<? extends DataObject>> type : schema.getTypes().entrySet()) {
 			args += type.getValue().getCanonicalName() + ",";
+		}*/
+		for(Class<? extends DataObject> type : schema.getTypes().getAllTypes()) {
+			args += type.getCanonicalName() + ",";
 		}
 		args += "]\n";
 		File sch = new File(rootDir.getAbsoluteFile() + "/.schema");
@@ -117,8 +120,11 @@ public class Storage {
 	
 	public void updateSchema() {
 		String args = "types=[";
-		for(Entry<String, Class<? extends DataObject>> type : schema.getTypes().entrySet()) {
+		/*for(Entry<String, Class<? extends DataObject>> type : schema.getTypes().entrySet()) {
 			args += type.getValue().getCanonicalName() + ",";	
+		}*/
+		for(Class<? extends DataObject> type : schema.getTypes().getAllTypes()) {
+			args += type.getCanonicalName() + ",";
 		}
 		args += "]\n";
 		File sch = new File(rootDir.getAbsoluteFile() + "/.schema");

@@ -49,7 +49,22 @@ public class Query {
 	private Object operateOnDB(BalloonDB bdb) {
 		List<DataObject> result = new ArrayList<DataObject>();
 		HashMap<Object, DataObject> objects = null;
-		for(Entry<String, Class<? extends DataObject>> type : bdb.getSchema().getTypes().entrySet()) { // loop all types in database
+		Class<? extends DataObject> type = null;
+		try {
+			type = bdb.getSchema().getTypes().get(this.workOnType);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		objects = bdb.getStorage().getData().get(type);
+		for(Entry<Object, DataObject> entry : bdb.getStorage().getData().get(type).entrySet()) { //loop through all objects
+			if (conditions != null && conditions.length > 0) {
+				if(checkAllConditions(type, entry.getValue()))
+					result.add(entry.getValue());
+			} else {
+				result.add(entry.getValue());
+			}
+		}
+		/*for(Entry<String, Class<? extends DataObject>> type : bdb.getSchema().getTypes().entrySet()) { // loop all types in database
 			 if(type.getValue().getName().toLowerCase().contains(this.workOnType.toLowerCase())) { // search matching type
 				 for(Entry<Object, DataObject> entry : bdb.getStorage().getData().get(type.getValue()).entrySet()) { //loop through all objects
 					 if (conditions != null && conditions.length > 0) {
@@ -62,7 +77,7 @@ public class Query {
 				 objects = bdb.getStorage().getData().get(type.getValue());
 				 break;
 			 }
-		}		
+		}*/		
 		for(DataObject obj : result) {
 			operate(bdb, objects, obj);
 		}

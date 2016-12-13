@@ -25,7 +25,12 @@ public class CreateTest extends TestCase {
 		Object result = Tester.db.create("type Horse { String name; boolean mountable; }");
 		System.out.println(result);
 		assertNotNull(result);
-		Class<? extends DataObject> horseType = Tester.db.getSchema().getTypes().get("Horse");
+		Class<? extends DataObject> horseType = null;
+		try {
+			horseType = Tester.db.getSchema().getTypes().get("Horse");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		assertNotNull(horseType);
 		
 		System.out.println("----------");

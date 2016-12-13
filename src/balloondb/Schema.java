@@ -6,7 +6,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,22 +14,22 @@ import javax.tools.ToolProvider;
 
 public class Schema {
 
-	private HashMap<String, Class<? extends DataObject>> types;
+	private PathHashMap types;
 	private boolean absoluteEntityIntegerity;
 	
 	public Schema(File root) {
-		types = new HashMap<String, Class<? extends DataObject>>();
+		types = new PathHashMap();
 		absoluteEntityIntegerity = false; 
 		try {//TODO: Create SchemaLoader
 			List<String> config = Files.readAllLines(new File(root.toString(), "/.schema").toPath());
 			for(String params : config) {
 				String[] param = params.split("=");
 				switch(param[0]){
-					case "types" :	System.out.println(param[1].replaceAll("[\\[\\]]", "")); 
+					case "types" :	//System.out.println(param[1].replaceAll("[\\[\\]]", "")); 
 									for(String classFile : param[1].replaceAll("[\\[\\]]", "").split(",")) {
-										System.out.println(classFile);
+										//System.out.println(classFile);
 										String[] path = classFile.split("\\.");
-										System.out.println(classFile);
+										//System.out.println(classFile);
 										File type = new File(root.toString(), 
 												classFile.toString().replace(".", "/") + "/" + path[path.length-1] + ".class");
 										if(type.exists()) {
@@ -49,16 +48,11 @@ public class Schema {
 		}
 	}
 	
-	public boolean typeInSchema(DataObject obj) {
-		return types.containsKey(obj.getClass().getName());
-	}
-	
 	public void insert(Class<? extends DataObject> type) {
-		if(!types.containsKey(type.getName()))
-			types.put(type.getName(), type);
+		types.put(type);
 	}
 
-	public HashMap<String, Class<? extends DataObject>> getTypes() {
+	public PathHashMap getTypes() {
 		return types;
 	}
 	
@@ -71,8 +65,10 @@ public class Schema {
 		Scanner scn = new Scanner(src);
 		scn.next(); //remove create word
 		String type = "";
-		if(!scn.next().equals("type"))
+		if(!scn.next().equals("type")) {
+			scn.close();
 			return null;
+		}
 		String typeName = scn.next();
 		String accessType = "";
 		type += "public class " + typeName + " extends balloondb.DataObject {";
@@ -182,6 +178,7 @@ public class Schema {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		scn.close();
 		bdb.getSchema().insert((Class<? extends DataObject>)c);
 		bdb.getStorage().updateSchema();
 		return (Class<? extends DataObject>) c;
