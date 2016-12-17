@@ -14,9 +14,73 @@ public class QueryParser {
 		switch(params[0].toLowerCase()) {
 			case "select" : query.setCommand(Command.SELECT); operateQuery(query, params); break;
 			case "delete" : query.setCommand(Command.DELETE); operateQuery(query, params); break;
+			case "insert" : query.setCommand(Command.INSERT); newInstance(query, params); break;
 			case "create" : query.setCommand(Command.CREATE); break;
 			default : throw new QuerySyntaxError();
 		}
+	}
+	
+	private static void newInstance(Query query, String[] params) {
+		String type = query.getQueryString();
+		type = type.substring(0, type.indexOf("("));
+		String[] qs = type.split("\\s+");
+		query.setWorkOnType(qs[qs.length-1]);
+		String tuple = query.getQueryString();
+		tuple = tuple.substring(tuple.indexOf("(") + 1);
+		tuple = tuple.substring(0, tuple.indexOf(")"));
+		query.setNewInstance(tuple);
+	}
+	
+	public static Class<?>[] inferTypes(String[] types) {
+		Class<?>[] classes = new Class[types.length];
+		for(int i = 0; i < types.length; i++) {
+			String type = types[i];
+				if(type.contains("\"")) 
+					classes[i] = String.class;
+				
+				if(type.equals("true") || type.equals("false"))
+					classes[i] = boolean.class;
+				
+				//matches to integers
+				if(type.matches("[-+]?\\d*")) {
+					char intType = type.charAt(type.length() - 1);
+					if(intType == 'l')
+						classes[i] = long.class;
+					else
+						classes[i] = int.class;
+				}
+				
+				//matches to real float pointer numbers
+				else if(type.matches("[-+]?\\d*\\.?\\d+")) {
+					char realType = type.charAt(type.length() - 1);
+					if(realType == 'd')
+						classes[i] = double.class;
+					else
+						classes[i] = float.class;
+				}
+		}
+		return classes;
+	}
+	
+	public static Object[] parseStrings(Class<?>[] types, String[] values) {
+		Object[] result = new Object[types.length];
+		for(int i = 0; i < types.length; i++) {
+			Class<?> type = types[i];
+			String value = values[i];
+			if(type.equals(String.class))
+				result[i] = value.substring(1, value.length() - 1);
+			if(type.equals(int.class))
+				result[i] = Integer.parseInt(value);
+			if(type.equals(long.class))
+				result[i] = Long.parseLong(value);
+			if(type.equals(float.class))
+				result[i] = Float.parseFloat(value);
+			if(type.equals(double.class))
+				result[i] = Double.parseDouble(value);
+			if(type.equals(boolean.class))
+				result[i] = Boolean.parseBoolean(value);
+		}
+		return result;
 	}
 	
 	private static void operateQuery(Query query, String[] params) {

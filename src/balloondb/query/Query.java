@@ -1,12 +1,16 @@
 package balloondb.query;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
 import balloondb.BalloonDB;
 import balloondb.DataObject;
+import balloondb.EntityIntegerityException;
 import balloondb.Schema;
 
 public class Query {
@@ -15,7 +19,8 @@ public class Query {
 	public enum Command {
 		SELECT,
 		DELETE,
-		CREATE
+		CREATE,
+		INSERT
 	}
 	private Command cmd;
 	private String[] conditions;
@@ -23,6 +28,7 @@ public class Query {
 	private Object[] createClassFields;
 	
 	private String createSrc;
+	private String newInstance;
 	
 	public Query(String query) {
 		this.query = query;
@@ -37,6 +43,7 @@ public class Query {
 		switch(cmd){
 			case DELETE:
 			case SELECT: return operateOnDB(bdb);
+			case INSERT: return insertNewInstance(bdb);// insert Person("pName", 1)
 			case CREATE: try {
 				return Schema.generateClass(query, bdb);
 			} catch (ClassNotFoundException e) {
@@ -64,20 +71,7 @@ public class Query {
 				result.add(entry.getValue());
 			}
 		}
-		/*for(Entry<String, Class<? extends DataObject>> type : bdb.getSchema().getTypes().entrySet()) { // loop all types in database
-			 if(type.getValue().getName().toLowerCase().contains(this.workOnType.toLowerCase())) { // search matching type
-				 for(Entry<Object, DataObject> entry : bdb.getStorage().getData().get(type.getValue()).entrySet()) { //loop through all objects
-					 if (conditions != null && conditions.length > 0) {
-						 if(checkAllConditions(type.getValue(), entry.getValue()))
-							 result.add(entry.getValue());
-					 } else {
-						 result.add(entry.getValue());
-					 }
-				 }
-				 objects = bdb.getStorage().getData().get(type.getValue());
-				 break;
-			 }
-		}*/		
+		
 		for(DataObject obj : result) {
 			operate(bdb, objects, obj);
 		}
@@ -102,6 +96,57 @@ public class Query {
 	public Object create(BalloonDB bdb) {
 		query = "create " + query;
 		return query(bdb);
+	}
+	
+	public Object insert(BalloonDB bdb) {
+		query = "insert " + query;
+		return query(bdb);
+	}
+	
+	//TODO: Create method to match newInstace to array of class for constructor
+	private Object insertNewInstance(BalloonDB bdb) {
+		Class<? extends DataObject> type = null;
+		try {
+			type = bdb.getSchema().getTypes().get(workOnType);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String[] params = newInstance.split(",");
+		
+		for(int i = 0; i < params.length; i++)
+			params[i] = params[i].trim();
+		
+		Class<?>[] typeList = QueryParser.inferTypes(params);
+		
+		Object[] values = QueryParser.parseStrings(typeList, params);
+		
+		Constructor<?> constructor =  null;
+		
+		try {
+			constructor = type.getDeclaredConstructor(typeList);
+		} catch (NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+		}
+		
+		if(constructor == null)
+			return null;
+		
+		Object data = null;
+		
+		try {
+			data = constructor.newInstance(values);
+		} catch (InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			bdb.getStorage().insert((DataObject)data);
+		} catch (EntityIntegerityException e) {
+			e.printStackTrace();
+		}
+		
+		return data;
 	}
 	
 	private void operate(BalloonDB bdb, HashMap<Object, DataObject> data, DataObject obj) {
@@ -180,6 +225,10 @@ public class Query {
 
 	public void setCreateSrc(String createSrc) {
 		this.createSrc = createSrc;
+	}
+	
+	public void setNewInstance(String instance) {
+		newInstance = instance;
 	}
 
 }

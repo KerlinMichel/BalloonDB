@@ -32,6 +32,11 @@ public class BalloonDB {
 		return q.select(this);
 	}
 	
+	public Object insert(String query) {
+		Query q = new Query(query);
+		return q.insert(this);
+	}
+	
 	public Object delete(String query) {
 		Query q = new Query(query);
 		return q.delete(this);
