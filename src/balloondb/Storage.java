@@ -81,6 +81,12 @@ public class Storage {
 		}
 	}
 	
+	public void insertType(Class<? extends DataObject> type) {
+		if(!data.containsKey(type))
+			data.put(type, new HashMap<Object, DataObject>());
+		schema.insert(type);
+	}
+	
 	public HashMap<Class<? extends DataObject>, HashMap<Object, DataObject>> getData() {
 		return data;
 	}

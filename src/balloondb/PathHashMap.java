@@ -121,5 +121,7 @@ public class PathHashMap {
 			traverseNodeAndGetTypes(entry.getValue(), list);
 		}
 	}
+	
+	//TODO create method to check if class is in PathHashMap
 
 }
