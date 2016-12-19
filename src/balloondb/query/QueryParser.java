@@ -54,14 +54,14 @@ public class QueryParser {
 		
 		//matches to integers
 		if(value.matches("[-+]?\\d*")) {
-			if(lastChar == 'l')
+			if(lastChar == 'l' || lastChar == 'L')
 				return long.class;
 			else
 				return int.class;
 		}
 		//matches to floating point numbers
 		else if(value.matches("[-+]?\\d*\\.?\\d+")) {
-			if(lastChar == 'd')
+			if(lastChar == 'd' || lastChar == 'D')
 				return double.class;
 			else
 				return float.class;
@@ -108,7 +108,6 @@ public class QueryParser {
 			return;
 		if(!params[2].equals("where"))
 			throw new QuerySyntaxError();
-		System.out.println("the len of params: " + params.length);
 		//the first three words are [command] [type] where 
         int numConds = (params.length-3)/3;
 		query.setConditions(new String[numConds]);
