@@ -30,8 +30,8 @@ public class SelectTest extends TestCase {
 		System.out.println(result);
 		assertNotNull(result);
 		
-		System.out.println("\nTesting select with condition where name = Norman");
-		result = Tester.db.select("person where name = Norman");
+		System.out.println("\nTesting select with condition where name = \"Norman\"");
+		result = Tester.db.select("person where name = \"Norman\"");
 		System.out.println(result);
 		assertNotNull(result);
 		
@@ -41,12 +41,12 @@ public class SelectTest extends TestCase {
 		assertNull(result);
 		
 		System.out.println("\nTesting select with condition where age = 14years");
-		result = Tester.db.select("person where age = -1");
+		result = Tester.db.select("person where age = 14years");
 		System.out.println(result);
 		assertNull(result);
 		
 		System.out.println("\nTesting select with condition where field = doesnotexist");
-		result = Tester.db.select("person where age = -1");
+		result = Tester.db.select("person where field = doesnotexist");
 		System.out.println(result);
 		assertNull(result);
 		

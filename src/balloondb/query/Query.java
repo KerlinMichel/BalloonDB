@@ -3,7 +3,6 @@ package balloondb.query;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -34,7 +33,7 @@ public class Query {
 		this.query = query;
 	}
 	
-	public Object query(BalloonDB bdb) {
+	public Object query(BalloonDB bdb) throws QuerySyntaxError {
 		try {
 			parse();
 		} catch (Exception e) {
@@ -53,7 +52,7 @@ public class Query {
 		}
 	}
 	
-	private Object operateOnDB(BalloonDB bdb) {
+	private Object operateOnDB(BalloonDB bdb) throws QuerySyntaxError {
 		List<DataObject> result = new ArrayList<DataObject>();
 		HashMap<Object, DataObject> objects = null;
 		Class<? extends DataObject> type = null;
@@ -83,22 +82,22 @@ public class Query {
 			return result;
 	}
 	
-	public Object select(BalloonDB bdb) {
+	public Object select(BalloonDB bdb) throws QuerySyntaxError {
 		query = "select " + query;
 		return query(bdb);
 	}
 	
-	public Object delete(BalloonDB bdb) {
+	public Object delete(BalloonDB bdb) throws QuerySyntaxError {
 		query = "delete " + query;
 		return query(bdb);
 	}
 	
-	public Object create(BalloonDB bdb) {
+	public Object create(BalloonDB bdb) throws QuerySyntaxError {
 		query = "create " + query;
 		return query(bdb);
 	}
 	
-	public Object insert(BalloonDB bdb) {
+	public Object insert(BalloonDB bdb) throws QuerySyntaxError {
 		query = "insert " + query;
 		return query(bdb);
 	}
@@ -118,7 +117,7 @@ public class Query {
 		
 		Class<?>[] typeList = QueryParser.inferTypes(params);
 		
-		Object[] values = QueryParser.parseStrings(typeList, params);
+		Object[] values = QueryParser.parseStringsToValue(typeList, params);
 		
 		Constructor<?> constructor =  null;
 		
@@ -156,7 +155,7 @@ public class Query {
 		}
 	}
 	
-	private boolean checkAllConditions(Class<? extends DataObject> type, DataObject obj) {
+	private boolean checkAllConditions(Class<? extends DataObject> type, DataObject obj) throws QuerySyntaxError {
 		for(String cond : conditions) {
 			if(!checkCondition(type, obj, cond))
 				return false;
@@ -164,19 +163,63 @@ public class Query {
 		return true;
 	}
 	
-	private boolean checkCondition(Class<? extends DataObject> type, DataObject obj, String cond) {
-		String[] params = cond.split("\\s+"); //create casting system
+	private boolean checkCondition(Class<? extends DataObject> type, DataObject obj, String cond) throws QuerySyntaxError {
+		String[] params = cond.split("\\s+"); 
+		
 		String fieldName = params[0];
 		String condition = params[1];
-		String checkValue = params[2];
-		Object field = obj.getField(fieldName, type);//getField(fieldName, type, obj);
+		Object checkValue = QueryParser.parseStringToValue(params[2]);;
+		if(checkValue == null)
+			return false;
+		Object field = obj.getField(fieldName, type);
+		
 		switch(condition) {
 			case "=" :
-				if(field.toString().equals(checkValue))
+				if(field.equals(checkValue))
 					return true;
+				return false;
+			case "!=" :
+				if(!field.equals(checkValue))
+					return true;
+				return false;
+			case ">=" :
+				if(field.equals(checkValue))
+					return true;
+				//if not equal then fall through to greater than check
+			case ">" : 
+				if(field instanceof Comparable && checkValue instanceof Comparable) {
+					int i = compare(field, checkValue);
+					if(i > 0)
+						return true;
+					return false;
+				}
+				//cannot compare objects
+				else
+					throw new QuerySyntaxError();
+			case "<=" :
+				if(field.equals(checkValue))
+					return true;
+				//if not equal then fall through to less than check
+			case "<" : 
+				if(field instanceof Comparable && checkValue instanceof Comparable) {
+					int i = compare(field, checkValue);
+					if(i < 0)
+						return true;
+					return false;
+				}
+				//cannot compare objects
+				else
+					throw new QuerySyntaxError();
 		}
 		
 		return false;
+	}
+	
+	private int compare(Object a, Object b) throws QuerySyntaxError {
+		if(a instanceof Comparable && b instanceof Comparable)
+			return ((Comparable<Object>)a).compareTo(b);
+		else
+			throw new QuerySyntaxError();
 	}
 	
 	private void parse() { 

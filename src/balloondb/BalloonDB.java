@@ -3,6 +3,7 @@ package balloondb;
 import java.io.File;
 
 import balloondb.query.Query;
+import balloondb.query.QuerySyntaxError;
 
 public class BalloonDB {
 	
@@ -24,22 +25,42 @@ public class BalloonDB {
 	
 	public Object create(String query) {
 		Query q = new Query(query);
-		return q.create(this);
+		try {
+			return q.create(this);
+		} catch (QuerySyntaxError e) {
+			//e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public Object select(String query) {
 		Query q = new Query(query);
-		return q.select(this);
+		try {
+			return q.select(this);
+		} catch (QuerySyntaxError e) {
+			//e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public Object insert(String query) {
 		Query q = new Query(query);
-		return q.insert(this);
+		try {
+			return q.insert(this);
+		} catch (QuerySyntaxError e) {
+			//e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public Object delete(String query) {
 		Query q = new Query(query);
-		return q.delete(this);
+		try {
+			return q.delete(this);
+		} catch (QuerySyntaxError e) {
+			//e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public void inflateDirectory() {

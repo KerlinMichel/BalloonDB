@@ -34,59 +34,82 @@ public class QueryParser {
 	public static Class<?>[] inferTypes(String[] types) {
 		Class<?>[] classes = new Class[types.length];
 		for(int i = 0; i < types.length; i++) {
-			String type = types[i];
-				if(type.contains("\"")) 
-					classes[i] = String.class;
-				
-				if(type.equals("true") || type.equals("false"))
-					classes[i] = boolean.class;
-				
-				//matches to integers
-				if(type.matches("[-+]?\\d*")) {
-					char intType = type.charAt(type.length() - 1);
-					if(intType == 'l')
-						classes[i] = long.class;
-					else
-						classes[i] = int.class;
-				}
-				
-				//matches to real float pointer numbers
-				else if(type.matches("[-+]?\\d*\\.?\\d+")) {
-					char realType = type.charAt(type.length() - 1);
-					if(realType == 'd')
-						classes[i] = double.class;
-					else
-						classes[i] = float.class;
-				}
+			classes[i] = inferType(types[i]);
 		}
 		return classes;
 	}
 	
-	public static Object[] parseStrings(Class<?>[] types, String[] values) {
+	public static Class<?> inferType(String value) {
+		char firstChar = value.charAt(0);
+		char lastChar = value.charAt(value.length()-1);
+		
+		if(firstChar == '"' && lastChar == '"')
+			return String.class;
+		
+		if(firstChar == '\'' && lastChar == '\'')
+			return char.class;
+		
+		if(value.equals("true") || value.equals("false"))
+			return boolean.class;
+		
+		//matches to integers
+		if(value.matches("[-+]?\\d*")) {
+			if(lastChar == 'l')
+				return long.class;
+			else
+				return int.class;
+		}
+		//matches to floating point numbers
+		else if(value.matches("[-+]?\\d*\\.?\\d+")) {
+			if(lastChar == 'd')
+				return double.class;
+			else
+				return float.class;
+		}
+		
+		return null;
+	}
+	
+	public static Object[] parseStringsToValue(Class<?>[] types, String[] values) {
 		Object[] result = new Object[types.length];
 		for(int i = 0; i < types.length; i++) {
-			Class<?> type = types[i];
-			String value = values[i];
-			if(type.equals(String.class))
-				result[i] = value.substring(1, value.length() - 1);
-			if(type.equals(int.class))
-				result[i] = Integer.parseInt(value);
-			if(type.equals(long.class))
-				result[i] = Long.parseLong(value);
-			if(type.equals(float.class))
-				result[i] = Float.parseFloat(value);
-			if(type.equals(double.class))
-				result[i] = Double.parseDouble(value);
-			if(type.equals(boolean.class))
-				result[i] = Boolean.parseBoolean(value);
+			result[i] = parseStringToValue(types[i], values[i]); 
 		}
 		return result;
 	}
 	
-	private static void operateQuery(Query query, String[] params) {
+	public static Object parseStringToValue(Class<?> type, String value) {
+		if(type.equals(String.class))
+			return value.substring(1, value.length() - 1);
+		if(type.equals(int.class))
+			return Integer.parseInt(value);
+		if(type.equals(long.class))
+			return Long.parseLong(value);
+		if(type.equals(float.class))
+			return Float.parseFloat(value);
+		if(type.equals(double.class))
+			return Double.parseDouble(value);
+		if(type.equals(boolean.class))
+			return Boolean.parseBoolean(value);
+		
+		return null;
+	}
+	
+	public static Object parseStringToValue(String value) throws QuerySyntaxError {
+		Class<?> type = inferType(value);
+		if(type == null)
+			throw new QuerySyntaxError();
+		return parseStringToValue(type, value);
+	}
+	
+	private static void operateQuery(Query query, String[] params) throws QuerySyntaxError {
 		query.setWorkOnType(params[1]);
 		if(params.length == 2)
 			return;
+		if(!params[2].equals("where"))
+			throw new QuerySyntaxError();
+		System.out.println("the len of params: " + params.length);
+		//the first three words are [command] [type] where 
         int numConds = (params.length-3)/3;
 		query.setConditions(new String[numConds]);
 		for(int i = 0; i < numConds; i++) {
