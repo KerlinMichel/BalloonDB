@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 public class StorageDriver {
 	
@@ -47,6 +49,16 @@ public class StorageDriver {
         	obj.initMethods();
 		
 		return obj;
+	}
+	
+	public void saveSchema(Schema schema, File file) throws IOException {
+		String args = "types=[";
+		for(Class<? extends DataObject> type : schema.getTypes().getAllTypes()) {
+			args += type.getCanonicalName() + ",";
+		}
+		args += "]\n";
+		File sch = new File(file.getAbsoluteFile() + "/.schema");
+		Files.write(sch.toPath(), args.getBytes(StandardCharsets.UTF_8));
 	}
 
 }

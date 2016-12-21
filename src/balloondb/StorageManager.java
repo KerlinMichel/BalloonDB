@@ -2,8 +2,6 @@ package balloondb;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -73,34 +71,16 @@ public class StorageManager {
 	}
 	
 	private void saveSchema() {
-		String args = "types=[";
-		/*for(Entry<String, Class<? extends DataObject>> type : schema.getTypes().entrySet()) {
-			args += type.getValue().getCanonicalName() + ",";
-		}*/
-		for(Class<? extends DataObject> type : schema.getTypes().getAllTypes()) {
-			args += type.getCanonicalName() + ",";
-		}
-		args += "]\n";
-		File sch = new File(rootDir.getAbsoluteFile() + "/.schema");
 		try {
-			Files.write(sch.toPath(), args.getBytes(StandardCharsets.UTF_8));
+			storageDriver.saveSchema(schema, rootDir);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void updateSchema() {
-		String args = "types=[";
-		/*for(Entry<String, Class<? extends DataObject>> type : schema.getTypes().entrySet()) {
-			args += type.getValue().getCanonicalName() + ",";	
-		}*/
-		for(Class<? extends DataObject> type : schema.getTypes().getAllTypes()) {
-			args += type.getCanonicalName() + ",";
-		}
-		args += "]\n";
-		File sch = new File(rootDir.getAbsoluteFile() + "/.schema");
 		try {
-			Files.write(sch.toPath(), args.getBytes(StandardCharsets.UTF_8));
+			storageDriver.saveSchema(schema, rootDir);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
