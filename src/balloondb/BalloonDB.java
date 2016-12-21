@@ -1,6 +1,7 @@
 package balloondb;
 
 import java.io.File;
+import java.io.IOException;
 
 import balloondb.query.Query;
 import balloondb.query.QuerySyntaxError;
@@ -8,11 +9,11 @@ import balloondb.query.QuerySyntaxError;
 public class BalloonDB {
 	
 	private Schema schema;
-	private Storage storage;
+	private StorageManager storage;
 	
 	public BalloonDB(File file) {
 		schema = new Schema(file);
-		storage = new Storage(file, schema);
+		storage = new StorageManager(file, schema);
 	}
 	
 	public void insert(DataObject obj) {
@@ -63,11 +64,11 @@ public class BalloonDB {
 		}
 	}
 	
-	public void inflateDirectory() {
+	public void inflateDirectory() throws ClassNotFoundException, IOException {
 		inflateDirectoryRec(storage.getRootDir());
 	}
 	
-	private void inflateDirectoryRec(File file) {
+	private void inflateDirectoryRec(File file) throws ClassNotFoundException, IOException {
 		for(File f : file.listFiles()) {
 			if(f.isDirectory())
 				inflateDirectoryRec(f);
@@ -90,7 +91,7 @@ public class BalloonDB {
 		return schema;
 	}
 	
-	public Storage getStorage() {
+	public StorageManager getStorage() {
 		return storage;
 	}
 

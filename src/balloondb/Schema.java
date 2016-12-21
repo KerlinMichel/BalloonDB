@@ -20,30 +20,9 @@ public class Schema {
 	public Schema(File root) {
 		types = new PathHashMap();
 		absoluteEntityIntegerity = false; 
-		try {//TODO: Create SchemaLoader
-			List<String> config = Files.readAllLines(new File(root.toString(), "/.schema").toPath());
-			for(String params : config) {
-				String[] param = params.split("=");
-				switch(param[0]){
-					case "types" :	//System.out.println(param[1].replaceAll("[\\[\\]]", "")); 
-									for(String classFile : param[1].replaceAll("[\\[\\]]", "").split(",")) {
-										//System.out.println(classFile);
-										String[] path = classFile.split("\\.");
-										//System.out.println(classFile);
-										File type = new File(root.toString(), 
-												classFile.toString().replace(".", "/") + "/" + path[path.length-1] + ".class");
-										if(type.exists()) {
-											URLClassLoader ucl = new URLClassLoader(
-													new URL[]{new File(root.toString(), classFile.toString().replace(".", "/")).toURI().toURL()});
-											insert((Class<? extends DataObject>)Class.forName(path[path.length-1], true, ucl));
-										}
-									}
-									break;
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
+		try {
+			Loader.loadSchema(this, root);
+		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
 	}

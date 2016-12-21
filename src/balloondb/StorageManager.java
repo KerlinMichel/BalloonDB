@@ -1,64 +1,36 @@
 package balloondb;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class Storage {
+public class StorageManager {
 	
 	private HashMap<Class<? extends DataObject>, HashMap<Object, DataObject>> data;
 	private Schema schema;
+	private StorageDriver storageDriver;
 	private File rootDir;
 	
-	public Storage(File rootDir, Schema schema) {
+	public StorageManager(File rootDir, Schema schema) {
 		data = new HashMap<Class<? extends DataObject>, HashMap<Object, DataObject>>();
 		this.schema = schema;
 		this.rootDir = rootDir;
+		storageDriver = new StorageDriver();
 	}
 	
-	public void saveObject(File file, DataObject obj) {
+	public void saveObject(DataObject obj) {
 		try {
-			FileOutputStream fileOut = new FileOutputStream(file);
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-	        out.writeObject(obj);
-	        out.close();
-	        fileOut.close();
+			storageDriver.saveObject(obj);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public DataObject loadObject(File file) {
-		DataObject obj = null;
-		try {
-			FileInputStream fileIn = new FileInputStream(file);
-	        ObjectInputStream in = new ObjectInputStream(fileIn);
-	        obj = (DataObject) in.readObject();
-	        in.close();
-	        fileIn.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		if(obj != null)
-			obj.initMethods();
-			try {
-				insert(obj);
-			} catch (EntityIntegerityException e) {
-				e.printStackTrace();
-			}
-		return obj;
+	public DataObject loadObject(File file) throws ClassNotFoundException, IOException {
+		return storageDriver.loadObject(file);
 	}
 	
 	public void insert(DataObject obj) throws EntityIntegerityException {
@@ -95,14 +67,7 @@ public class Storage {
 		saveSchema();
 		for(Entry<Class<? extends DataObject>, HashMap<Object, DataObject>> entry : data.entrySet()) {
 			for(Entry<Object, DataObject> objs : entry.getValue().entrySet()) {
-				try {
-					 File file = objs.getValue().getFile();
-					 file.getParentFile().mkdirs();
-					 file.createNewFile();
-			         saveObject(file, objs.getValue());
-			      }catch(IOException i) {
-			         i.printStackTrace();
-			      }
+				saveObject(objs.getValue());
 			}
 		}
 	}
