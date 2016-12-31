@@ -1,6 +1,10 @@
 package balloondb.query;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import balloondb.query.Query.Command;
 
@@ -10,7 +14,14 @@ public class QueryParser {
 	private QueryParser(){};
 	
 	public static void parse(Query query) throws QuerySyntaxError {
-		String[] params = query.getQueryString().split("\\s+");
+		List<String> matchList = new LinkedList<String>();
+		Pattern regex = Pattern.compile("[^\\s\"']+|\"[^\"]*\"|'[^']*'");
+		Matcher regexMatcher = regex.matcher(query.getQueryString());
+		while (regexMatcher.find()) {
+		    matchList.add(regexMatcher.group());
+		} 
+		String[] params = new String[matchList.size()];
+		matchList.toArray(params);
 		switch(params[0].toLowerCase()) {
 			case "select" : query.setCommand(Command.SELECT); operateQuery(query, params); break;
 			case "delete" : query.setCommand(Command.DELETE); operateQuery(query, params); break;

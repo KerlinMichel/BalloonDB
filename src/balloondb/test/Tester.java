@@ -7,6 +7,7 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
 import balloondb.BalloonDB;
+import balloondb.test.queryconditions.EqualityAndRelationalTest;
 import balloondb.test.simplequeries.SimpleQuerySuite;
 
 
@@ -16,7 +17,8 @@ public class Tester {
 	public static BalloonDB db = new BalloonDB(testingDir);
 	
 	public static void main(String[] args) {
-		Result result = JUnitCore.runClasses(SimpleQuerySuite.class);
+		Result result = JUnitCore.runClasses(SimpleQuerySuite.class, 
+				EqualityAndRelationalTest.class);
 	
 		for (Failure failure : result.getFailures()) {
 			System.out.println(failure.toString());

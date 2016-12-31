@@ -4,8 +4,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import balloondb.BalloonDB;
 import balloondb.DataObject;
@@ -152,6 +155,8 @@ public class Query {
 		switch(cmd){
 			case DELETE : data.remove(obj.getKey()); obj.delete();
 				break;
+			default:
+				break;
 		}
 	}
 	
@@ -164,7 +169,14 @@ public class Query {
 	}
 	
 	private boolean checkCondition(Class<? extends DataObject> type, DataObject obj, String cond) throws QuerySyntaxError {
-		String[] params = cond.split("\\s+"); 
+		List<String> matchList = new LinkedList<String>();
+		Pattern regex = Pattern.compile("[^\\s\"']+|\"[^\"]*\"|'[^']*'");
+		Matcher regexMatcher = regex.matcher(cond);
+		while (regexMatcher.find()) {
+		    matchList.add(regexMatcher.group());
+		} 
+		String[] params = new String[matchList.size()];
+		matchList.toArray(params); 
 		
 		String fieldName = params[0];
 		String condition = params[1];
