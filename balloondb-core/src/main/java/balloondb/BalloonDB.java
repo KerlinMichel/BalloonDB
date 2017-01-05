@@ -12,6 +12,7 @@ public class BalloonDB {
 	private StorageManager storage;
 	
 	public BalloonDB(File file) {
+		file.mkdirs();
 		schema = new Schema(file);
 		storage = new StorageManager(file, schema);
 	}
