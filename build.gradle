@@ -1,0 +1,28 @@
+buildscript {
+
+	repositories {
+		mavenCentral()
+		mavenLocal()
+		jcenter()
+	}
+
+	dependencies {
+
+	}
+}
+
+subprojects {
+	
+	apply plugin: 'java'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+	dependencies {
+		testCompile 'junit:junit:4.11'
+	}
+	
+}
+
