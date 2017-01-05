@@ -31,7 +31,7 @@ bdb.insert(obj1);
 bdb.insert(obj2);
 bdb.forceSave();
 
-bdb.select("CustomObject where name = Some-name");
+bdb.select("CustomObject where name = \"Some-name\"");
 bdb.delete("CustomObject where id = 45");
 ```
 The physical file will be save in /Test followed by the class path, in this case /bdb/demo, and the file name with by an auto-generated UUID. So it will under /Test/bdb/demo/{some UUID}.ser
