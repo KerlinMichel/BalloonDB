@@ -2,6 +2,10 @@
 .gradle
 build/
 
+# IntelliJ IDEA
+.idea
+*.iml
+
 # Eclipse
 *.classpath
 *.project
@@ -9,7 +13,5 @@ build/
 /bin/*
 *.metadata
 
-
 # OS X
-# ----
 .DS_Store

@@ -1,0 +1,4 @@
+dependencies {
+    compile "org.frege-lang:frege:3.22.367-g2737683"
+    compile project(":balloondb-core-frege")
+}
