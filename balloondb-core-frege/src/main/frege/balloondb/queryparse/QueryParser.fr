@@ -1,0 +1,22 @@
+module balloondb.QueryParser where
+
+import Data.MicroParsec
+import Data.Iterators(StringIterator SI)
+
+queryParser = do
+  queries <- many query
+  return queries
+
+query = do
+  command <- ((string "SELECT") <|> (string "DELETE"))
+  spaces
+  dataObjType <- (many letter)
+  eoe
+  return (command, dataObjType)
+
+--- end of expression
+eoe = satisfy (\c -> c == ';')
+
+eol = satisfy (\c -> c == '\n')
+
+parseQuery q = parse queryParser (SI.from q)
