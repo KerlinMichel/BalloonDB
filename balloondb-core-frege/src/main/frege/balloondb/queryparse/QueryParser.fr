@@ -1,4 +1,4 @@
-module balloondb.QueryParser where
+module balloondb.queryparse.QueryParser where
 
 import Data.MicroParsec
 import Data.Iterators(StringIterator SI)
