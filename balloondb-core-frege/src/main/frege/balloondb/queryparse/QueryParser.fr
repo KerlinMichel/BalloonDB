@@ -7,16 +7,28 @@ queryParser = do
   queries <- many query
   return queries
 
-query = do
-  command <- ((string "SELECT") <|> (string "DELETE"))
+query = selectQuery
+    <|> deleteQuery
+
+selectQuery = do
+  (string "SELECT")
   spaces
   dataObjType <- (many letter)
   eoe
-  return (command, dataObjType)
+  return ("SELECT", dataObjType)
 
---- end of expression
-eoe = satisfy (\c -> c == ';')
+deleteQuery = do
+  (string "DELETE")
+  spaces
+  dataObjType <- (many letter)
+  eoe
+  return ("DELETE", dataObjType)
 
-eol = satisfy (\c -> c == '\n')
+-- end of expression is a semi-colon
+eoe = charParse ';'
+
+eol = charParse '\n'
+
+charParse c = satisfy(\x -> x == c)
 
 parseQuery q = parse queryParser (SI.from q)
