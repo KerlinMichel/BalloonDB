@@ -29,7 +29,7 @@ data Literal = CharL | StringL | IntL | LongL | FloatL | DoubleL
 data Query
   = SelectQuery String
   | DeleteQuery String
-  | InsertQuery String [String]
+  | InsertQuery String [(Literal, String)]
   | CreateQuery String [(Literal, String)]
 
 -- end of expression is a semi-colon
