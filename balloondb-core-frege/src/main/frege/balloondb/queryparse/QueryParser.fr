@@ -24,6 +24,14 @@ deleteQuery = do
   eoe
   return ("DELETE", dataObjType)
 
+data Literal = CharL | StringL | IntL | LongL | FloatL | DoubleL
+
+data Query
+  = SelectQuery String
+  | DeleteQuery String
+  | InsertQuery String [String]
+  | CreateQuery String [(Literal, String)]
+
 -- end of expression is a semi-colon
 eoe = charParse ';'
 
