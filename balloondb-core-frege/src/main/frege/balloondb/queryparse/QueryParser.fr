@@ -24,6 +24,15 @@ deleteQuery = do
   eoe
   return ("DELETE", dataObjType)
 
+insertQuery = do
+  (string "INSERT")
+  spaces
+  dataObjType <- (many letter)
+  leftParen
+  params <- (literal `sepBy` (charParse ','))
+  rightParen
+  return ("INSERT", dataObjType, params)
+
 data Literal = CharL | StringL | IntL | LongL | FloatL | DoubleL
 
 data Query
@@ -32,11 +41,54 @@ data Query
   | InsertQuery String [(Literal, String)]
   | CreateQuery String [(Literal, String)]
 
+charParse c = satisfy(\x -> x == c)
+
 -- end of expression is a semi-colon
 eoe = charParse ';'
 
 eol = charParse '\n'
 
-charParse c = satisfy(\x -> x == c)
+leftParen = charParse '('
+
+rightParen = charParse ')'
+
+anyChar = satisfy (const True)
+
+--literal parsers
+literal = char <|> stringLiteral <|> boolean <|> double <|> float <|> long <|> int
+
+boolean = do
+  val <-((string "true") <|> (string "false"))
+  return (unpacked val)
+
+int = (many digit)
+
+long = do
+  val <- int
+  (charParse 'l')
+  return (val ++ ['l'])
+
+float = do
+  left <- (many digit)
+  (charParse '.')
+  right <- (many digit)
+  return (left ++ ['.'] ++ right)
+
+double = do
+  val <- float
+  (charParse 'd')
+  return (val ++ ['d'])
+
+char = do
+  charParse '\''
+  char <- anyChar
+  charParse '\''
+  return ('\'' : char : ['\''])
+
+stringLiteral = do
+  charParse '\"'
+  chars <- many (satisfy (\c -> c != '\"'))
+  charParse '\"'
+  return (['\"'] ++ chars ++  ['\"'])
 
 parseQuery q = parse queryParser (SI.from q)
