@@ -9,20 +9,21 @@ queryParser = do
 
 query = selectQuery
     <|> deleteQuery
+    <|> insertQuery
 
 selectQuery = do
   (string "SELECT")
   spaces
   dataObjType <- (many letter)
   eoe
-  return ("SELECT", dataObjType)
+  return $ SelectQuery (packed dataObjType)
 
 deleteQuery = do
   (string "DELETE")
   spaces
   dataObjType <- (many letter)
   eoe
-  return ("DELETE", dataObjType)
+  return $ DeleteQuery (packed dataObjType)
 
 insertQuery = do
   (string "INSERT")
@@ -31,15 +32,20 @@ insertQuery = do
   leftParen
   params <- (literal `sepBy` (charParse ','))
   rightParen
-  return ("INSERT", dataObjType, params)
+  return $ InsertQuery (packed dataObjType) params
 
-data Literal = CharL | StringL | IntL | LongL | FloatL | DoubleL
+data Literal = CharL [Char] | StringL [Char] | IntL [Char] | LongL [Char]
+             | FloatL [Char] | DoubleL [Char] | BoolL [Char]
+
+derive Show Literal
 
 data Query
   = SelectQuery String
   | DeleteQuery String
-  | InsertQuery String [(Literal, String)]
-  | CreateQuery String [(Literal, String)]
+  | InsertQuery String [Literal]
+  | CreateQuery String [Literal]
+
+derive Show Query
 
 charParse c = satisfy(\x -> x == c)
 
@@ -59,36 +65,40 @@ literal = char <|> stringLiteral <|> boolean <|> double <|> float <|> long <|> i
 
 boolean = do
   val <-((string "true") <|> (string "false"))
-  return (unpacked val)
+  return $ BoolL (unpacked val)
 
-int = (many digit)
+int = do 
+  val <- (many digit)
+  return $ IntL val
 
 long = do
-  val <- int
+  val <- (many digit)
   (charParse 'l')
-  return (val ++ ['l'])
+  return $ LongL (val ++ ['l'])
 
 float = do
   left <- (many digit)
   (charParse '.')
   right <- (many digit)
-  return (left ++ ['.'] ++ right)
+  return $ FloatL (left ++ ['.'] ++ right)
 
 double = do
-  val <- float
+  left <- (many digit)
+  (charParse '.')
+  right <- (many digit)
   (charParse 'd')
-  return (val ++ ['d'])
+  return $ DoubleL (left ++ ['.'] ++ right)
 
 char = do
   charParse '\''
   char <- anyChar
   charParse '\''
-  return ('\'' : char : ['\''])
+  return $ CharL ( '\'' : char : ['\''])
 
 stringLiteral = do
   charParse '\"'
   chars <- many (satisfy (\c -> c != '\"'))
   charParse '\"'
-  return (['\"'] ++ chars ++  ['\"'])
+  return $ StringL (['\"'] ++ chars ++  ['\"'])
 
 parseQuery q = parse queryParser (SI.from q)
