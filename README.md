@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/KerlinMichel/BalloonDB.svg?branch=master)](https://travis-ci.org/KerlinMichel/BalloonDB)
+
 # BalloonDB :balloon:
 
 BalloonDB is an object relational database. It is build on Java and it follows the ideas of object orient programming.
