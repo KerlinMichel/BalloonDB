@@ -8,6 +8,7 @@ public class InsertTest extends BalloonDBTestCase {
 	
 	
 	protected void setUp() {
+		Tester.init();
 		Tester.db.getStorage().insertType(Person.class);
 		Tester.db.delete("person"); 
 	}

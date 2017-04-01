@@ -48,9 +48,13 @@ public class Tester {
 			System.out.println("Loading " + variable.getKey());
 			if(variable.getKey().toString().equals("TEST_STORAGE_DIR")) {
 				testingDir = new File(variable.getValue().toString());
-				db = new BalloonDB(testingDir);
 			}
 		}
+	}
+
+	public static void init() {
+		loadProperties();
+		Tester.db = new BalloonDB(testingDir);
 	}
 
 }

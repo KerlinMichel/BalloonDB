@@ -16,7 +16,6 @@ public class QueryConditionsSuite {
 
 	@BeforeClass
 	public static void init() {
-		Tester.loadProperties();
-		Tester.db = new BalloonDB(Tester.testingDir);
+		Tester.init();
 	}
 }

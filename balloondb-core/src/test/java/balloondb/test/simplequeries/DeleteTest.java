@@ -13,6 +13,7 @@ public class DeleteTest extends BalloonDBTestCase {
 	protected void setUp() {
 		p1 = new Person("Crimson King", 1000);
 		p2 = new Person("Norman", 35);
+		Tester.init();
 		Tester.db.insert(p1);
 		Tester.db.insert(p2);
 		Tester.db.forceSave();
