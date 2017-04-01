@@ -46,8 +46,10 @@ public class Tester {
 
 		for (Map.Entry<Object, Object> variable : variables.entrySet()) {
 			System.out.println("Loading " + variable.getKey());
-			if(variable.getKey().toString().equals("TEST_STORAGE_DIR"))
+			if(variable.getKey().toString().equals("TEST_STORAGE_DIR")) {
 				testingDir = new File(variable.getValue().toString());
+				db = new BalloonDB(testingDir);
+			}
 		}
 	}
 
