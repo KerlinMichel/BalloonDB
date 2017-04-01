@@ -35,6 +35,8 @@ public class Tester {
 	}
 
 	public static void loadProperties() {
+		if(db != null && testingDir != null)
+			return;
 		Properties variables = new Properties();
 		try {
 			variables.load(new FileInputStream(new File("./.properties")));

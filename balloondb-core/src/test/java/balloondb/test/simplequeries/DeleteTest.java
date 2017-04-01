@@ -1,11 +1,11 @@
 package balloondb.test.simplequeries;
 
 import balloondb.DataObject;
+import balloondb.test.BalloonDBTestCase;
 import balloondb.test.Person;
 import balloondb.test.Tester;
-import junit.framework.TestCase;
 
-public class DeleteTest extends TestCase {
+public class DeleteTest extends BalloonDBTestCase {
 	
 	protected Person p1;
 	protected Person p2;

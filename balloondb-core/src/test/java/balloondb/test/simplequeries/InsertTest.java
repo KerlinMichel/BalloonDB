@@ -1,10 +1,10 @@
 package balloondb.test.simplequeries;
 
+import balloondb.test.BalloonDBTestCase;
 import balloondb.test.Person;
 import balloondb.test.Tester;
-import junit.framework.TestCase;
 
-public class InsertTest extends TestCase {
+public class InsertTest extends BalloonDBTestCase {
 	
 	
 	protected void setUp() {

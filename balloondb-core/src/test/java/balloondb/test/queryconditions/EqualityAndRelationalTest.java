@@ -2,11 +2,11 @@ package balloondb.test.queryconditions;
 
 import java.util.List;
 
+import balloondb.test.BalloonDBTestCase;
 import balloondb.test.Person;
 import balloondb.test.Tester;
-import junit.framework.TestCase;
 
-public class EqualityAndRelationalTest extends TestCase {
+public class EqualityAndRelationalTest extends BalloonDBTestCase {
 	
 	protected Person p1;
 	protected Person p2;
