@@ -1,0 +1,4 @@
+# Create a .properties file in this directory following this file as a template
+
+# This is the directory where tests will use as storage
+TEST_STORAGE_DIR =

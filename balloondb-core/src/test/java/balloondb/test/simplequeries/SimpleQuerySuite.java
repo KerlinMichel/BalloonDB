@@ -1,5 +1,7 @@
 package balloondb.test.simplequeries;
 
+import balloondb.test.Tester;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -10,5 +12,10 @@ import org.junit.runners.Suite;
 })
 
 public class SimpleQuerySuite {
+
+    @BeforeClass
+    public static void init() {
+        Tester.loadProperties();
+    }
 
 }

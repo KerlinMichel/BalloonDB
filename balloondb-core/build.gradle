@@ -2,3 +2,10 @@ dependencies {
     compile "org.frege-lang:frege:3.22.367-g2737683"
     compile project(":balloondb-core-frege")
 }
+
+test {
+    testLogging.showStandardStreams = true
+    afterTest { desc, result ->
+        println "Executing ${desc.name} [${desc.className}] with result: ${result.resultType}"
+    }
+}

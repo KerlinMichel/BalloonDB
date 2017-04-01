@@ -15,3 +15,6 @@ build/
 
 # OS X
 .DS_Store
+
+# properties and env vars
+.properties

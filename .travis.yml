@@ -1,4 +1,11 @@
 language: java
 jdk:
   - oraclejdk8
-script: ./gradlew check --stacktrace
+
+before_script:
+  - mkdir -p ./testing_storage_space
+  - echo "TEST_STORAGE_DIR = $PWD/testing_storage_space" > ./balloondb-core/.properties
+
+script:
+  - cd balloondb-core
+  - ../gradlew check --stacktrace
