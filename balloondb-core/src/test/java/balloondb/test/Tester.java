@@ -17,11 +17,12 @@ import balloondb.test.simplequeries.SimpleQuerySuite;
 
 public class Tester {
 	
-	private static File testingDir;
-	public static BalloonDB db = new BalloonDB(testingDir);
+	public static File testingDir;
+	public static BalloonDB db;
 	
 	public static void main(String[] args) {
 		Tester.loadProperties();
+		db = new BalloonDB(testingDir);
 
 		Result result = JUnitCore.runClasses(SimpleQuerySuite.class, 
 				EqualityAndRelationalTest.class);
