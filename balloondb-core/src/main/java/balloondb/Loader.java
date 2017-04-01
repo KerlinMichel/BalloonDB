@@ -15,7 +15,10 @@ public class Loader {
 	private Loader(){};
 	
 	public static void loadSchema(Schema schema, File file) throws IOException, ClassNotFoundException {
-		List<String> config = Files.readAllLines(new File(file.toString(), "/.schema").toPath());
+		File schemaFile = new File(file.toString(), "/.schema");
+		if(!schemaFile.exists())
+			return;
+		List<String> config = Files.readAllLines(schemaFile.toPath());
 		for(String params : config) {
 			String[] param = params.split("=");
 			switch(param[0]){

@@ -31,8 +31,6 @@ public class Tester {
 			System.out.println(failure.toString());
 		}
 
-		System.out.println("File: " + new File("./").getName());;
-
 		System.out.println("The tests were " + (result.wasSuccessful() ? "succesful." : "a failure."));
 	}
 
